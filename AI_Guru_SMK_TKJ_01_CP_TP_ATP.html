@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Guru SMK TKJ #01 - CP → TP → ATP</title>
+<style>
+:root{
+  --bg:#f4f7fb; --card:#fff; --primary:#155eef; --dark:#172033;
+  --muted:#667085; --border:#d9e2f2; --success:#067647; --danger:#b42318;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--dark);line-height:1.55}
+header{background:linear-gradient(135deg,#155eef,#6938ef);color:white;padding:28px 18px}
+.container{max-width:1100px;margin:auto}
+h1{margin:0 0 8px;font-size:28px}
+h2{margin-top:0;font-size:21px}
+h3{font-size:17px;margin-bottom:8px}
+.subtitle{opacity:.92}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button,select,input,textarea{font:inherit}
+button{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:700}
+.btn-primary{background:#155eef;color:white}
+.btn-light{background:white;color:#155eef}
+.btn-success{background:#067647;color:white}
+.btn-danger{background:#b42318;color:white}
+main{padding:22px 14px 50px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 4px 14px rgba(16,24,40,.05)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+label{font-weight:700;display:block;margin-bottom:6px}
+input,select,textarea{width:100%;border:1px solid #cfd8e6;border-radius:9px;padding:10px;background:white}
+textarea{min-height:130px;resize:vertical}
+.prompt-card{border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;background:#fbfcfe}
+.prompt-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.prompt-head h3{margin:0}
+pre{white-space:pre-wrap;background:#101828;color:#f8fafc;border-radius:10px;padding:14px;overflow:auto;font-size:13px}
+.badge{display:inline-block;background:#eef4ff;color:#155eef;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.search{margin-bottom:16px}
+.hidden{display:none}
+.small{font-size:13px;color:var(--muted)}
+.notice{background:#fffaeb;border:1px solid #fedf89;padding:12px;border-radius:10px}
+footer{text-align:center;color:var(--muted);padding:25px}
+@media(max-width:600px){h1{font-size:23px}.card{padding:15px}.prompt-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+<div class="container">
+<h1>AI GURU SMK – TKJ #01</h1>
+<div class="subtitle">CP → TP → ATP Master Prompt | 20 Prompt + Form Input + One-Click Prompt</div>
+<div class="toolbar">
+<button class="btn-light" onclick="copyOneClick()">📋 Copy One-Click</button>
+<button class="btn-light" onclick="copyAll()">📋 Copy Semua Prompt</button>
+<button class="btn-light" onclick="window.print()">🖨️ Cetak</button>
+<button class="btn-light" onclick="resetForm()">↻ Reset</button>
+</div>
+</div>
+</header>
+
+<main class="container">
+
+<section class="card">
+<h2>⚙️ Form Input Cepat</h2>
+<div class="grid">
+<div><label>Kelas</label><input id="kelas" placeholder="Contoh: X"></div>
+<div><label>Fase</label><input id="fase" placeholder="Contoh: E"></div>
+<div><label>Semester</label><select id="semester"><option value="">Pilih</option><option>1</option><option>2</option></select></div>
+<div><label>Jurusan/Konsentrasi</label><input id="jurusan" value="TKJ / TJKT"></div>
+<div><label>Mata Pelajaran</label><input id="mapel" placeholder="Contoh: ASJ"></div>
+<div><label>Elemen</label><input id="elemen" placeholder="Contoh: Administrasi Sistem Jaringan"></div>
+<div><label>Jumlah Minggu Efektif</label><input id="minggu" placeholder="Contoh: 18"></div>
+</div>
+<br>
+<label>CP</label>
+<textarea id="cp" placeholder="Tempel Capaian Pembelajaran di sini..."></textarea>
+</section>
+
+<section class="card">
+<h2>📌 Cara Menggunakan</h2>
+<ol>
+<li>Isi Form Input Cepat jika diperlukan.</li>
+<li>Pilih prompt sesuai kebutuhan.</li>
+<li>Tekan <b>Copy</b>.</li>
+<li>Tempel ke AI yang digunakan.</li>
+<li>Untuk proses lengkap CP → TP → ATP, gunakan <b>Prompt 20 – One Click Package</b>.</li>
+</ol>
+<div class="notice"><b>Catatan:</b> Prompt membantu menyusun perangkat ajar, tetapi hasil tetap perlu diperiksa dan disesuaikan dengan dokumen kurikulum serta regulasi resmi terbaru yang berlaku.</div>
+</section>
+
+<section class="card">
+<h2>🔎 Daftar 20 Prompt</h2>
+<input class="search" id="search" placeholder="Cari prompt, misalnya: TP, ATP, validasi, kelas X..." oninput="filterPrompts()">
+<div id="promptList"></div>
+</section>
+
+</main>
+<footer>AI GURU SMK – TKJ #01 • CP → TP → ATP Master Prompt</footer>
+
+<script>
+const prompts = [
+["01","Analisis CP",`Bertindaklah sebagai ahli kurikulum SMK dan instructional designer bidang Teknik Jaringan Komputer dan Telekomunikasi.
+
+Saya akan memberikan Capaian Pembelajaran (CP).
+
+Tugas Anda:
+1. Membaca CP secara keseluruhan.
+2. Mengidentifikasi kompetensi yang harus dikuasai peserta didik.
+3. Mengidentifikasi pengetahuan, keterampilan, dan sikap kerja yang tersirat.
+4. Mengidentifikasi materi pembelajaran yang relevan.
+5. Mengidentifikasi aktivitas praktik yang mungkin dilakukan.
+6. Mengidentifikasi keterkaitan dengan kebutuhan dunia kerja/industri.
+7. Jangan menambahkan ketentuan yang tidak terdapat dalam CP tanpa memberikan keterangan bahwa itu merupakan rekomendasi.
+
+Tampilkan hasil dalam tabel:
+| No | Bagian CP | Kompetensi | Pengetahuan | Keterampilan | Materi | Aktivitas Praktik | Kaitan Dunia Kerja |
+
+Berikut CP yang harus dianalisis:
+[PASTE CP DI SINI]`],
+
+["02","Pemetaan Kompetensi",`Berdasarkan CP yang saya berikan, buat pemetaan kompetensi untuk pembelajaran SMK bidang TKJ/TJKT.
+
+Kelompokkan menjadi:
+1. Pengetahuan
+2. Keterampilan
+3. Praktik
+4. Pemecahan masalah
+5. Keselamatan kerja
+6. Sikap kerja profesional
+
+Jangan membuat kompetensi yang tidak memiliki dasar dari CP.
+
+Tampilkan dalam tabel:
+| No | Kompetensi | Jenis | Indikator Penguasaan | Bukti Kompetensi |
+
+CP:
+[PASTE CP]`],
+
+["03","Identifikasi Materi",`Berdasarkan CP berikut, identifikasi materi pembelajaran yang perlu dipelajari peserta didik SMK TKJ/TJKT.
+
+Kelompokkan materi menjadi:
+- Materi dasar
+- Materi inti
+- Materi praktik
+- Materi pengayaan
+
+Untuk setiap materi berikan:
+1. Nama materi
+2. Alasan materi diperlukan
+3. Pengetahuan yang harus dikuasai
+4. Keterampilan yang harus dikuasai
+5. Contoh aktivitas praktik
+
+Jangan memasukkan materi yang tidak relevan dengan CP.
+
+CP:
+[PASTE CP]`],
+
+["04","Analisis Kata Kerja Kompetensi",`Analisis kata kerja yang terdapat dalam CP berikut.
+
+Untuk setiap kata kerja:
+1. Tulis kata kerjanya.
+2. Jelaskan kemampuan yang dituntut.
+3. Tentukan apakah termasuk pengetahuan, keterampilan, analisis, praktik, atau pemecahan masalah.
+4. Berikan contoh aktivitas pembelajaran yang sesuai.
+5. Berikan contoh bentuk asesmen yang sesuai.
+
+Jangan mengganti makna CP.
+
+CP:
+[PASTE CP]`],
+
+["05","Membuat TP",`Bertindaklah sebagai instructional designer SMK bidang TKJ/TJKT.
+
+Berdasarkan CP yang saya berikan, susun Tujuan Pembelajaran (TP).
+
+Setiap TP harus:
+- jelas
+- terukur
+- relevan dengan kompetensi
+- sesuai tingkat peserta didik
+- dapat dinilai
+- memiliki hubungan yang jelas dengan CP
+- mempertimbangkan pembelajaran teori dan praktik
+
+Gunakan format:
+"Peserta didik mampu [kompetensi] melalui [konteks/aktivitas] dengan [kriteria keberhasilan]."
+
+Tampilkan:
+| No | TP | Kompetensi | Aktivitas | Bukti/Indikator Keberhasilan |
+
+CP:
+[PASTE CP]`],
+
+["06","Memperbaiki TP",`Periksa Tujuan Pembelajaran berikut.
+
+Evaluasi:
+1. Kejelasan
+2. Keterukuran
+3. Kesesuaian dengan CP
+4. Kesesuaian dengan pembelajaran SMK
+5. Kesesuaian teori dan praktik
+6. Kesesuaian dengan tingkat kelas
+
+Jika ada masalah:
+- jelaskan masalahnya
+- berikan versi perbaikan
+- jangan mengubah maksud kompetensi
+
+CP:
+[PASTE CP]
+
+TP:
+[PASTE TP]`],
+
+["07","Mengelompokkan TP",`Kelompokkan Tujuan Pembelajaran berikut berdasarkan urutan kompetensi:
+
+1. Dasar
+2. Pemahaman
+3. Penerapan
+4. Praktik
+5. Analisis
+6. Troubleshooting
+7. Proyek
+
+Setelah mengelompokkan, susun kembali TP agar membentuk alur belajar yang logis.
+
+TP:
+[PASTE TP]`],
+
+["08","Validasi TP",`Lakukan validasi terhadap TP berikut.
+
+Buat tabel:
+| TP | Sesuai CP | Terukur | Relevan SMK | Dapat Dipraktikkan | Perlu Perbaikan |
+
+Gunakan:
+✓ Sesuai
+⚠ Perlu diperbaiki
+
+Setelah tabel, berikan versi TP yang telah diperbaiki jika diperlukan.
+
+CP:
+[PASTE CP]
+
+TP:
+[PASTE TP]`],
+
+["09","Membuat ATP",`Berdasarkan CP dan TP berikut, susun Alur Tujuan Pembelajaran (ATP) untuk SMK TKJ/TJKT.
+
+Susun dari kompetensi sederhana menuju kompetensi yang lebih kompleks.
+
+Pertimbangkan:
+- teori
+- praktik
+- troubleshooting
+- proyek
+- kebutuhan dunia kerja
+
+Format:
+| No | TP | Materi | Aktivitas Pembelajaran | Praktik | Asesmen | Alokasi Waktu |
+
+CP:
+[PASTE CP]
+
+TP:
+[PASTE TP]`],
+
+["10","Mengurutkan ATP",`Periksa urutan ATP berikut.
+
+Tentukan apakah setiap TP sudah berada pada urutan pembelajaran yang logis.
+
+Jika belum:
+1. Identifikasi masalah.
+2. Jelaskan alasannya.
+3. Susun ulang.
+4. Jangan menghilangkan TP tanpa alasan.
+5. Jangan menambahkan kompetensi baru.
+
+ATP:
+[PASTE ATP]`],
+
+["11","ATP Per Semester",`Susun ATP berikut ke dalam semester pembelajaran.
+
+Kelas:
+[ X / XI / XII ]
+
+Semester:
+[ 1 / 2 ]
+
+Jumlah minggu efektif:
+[ISI]
+
+Pastikan:
+- kompetensi dasar diberikan sebelum kompetensi lanjutan
+- kegiatan praktik mendapat waktu yang cukup
+- materi tidak menumpuk pada akhir semester
+- kegiatan asesmen diperhitungkan
+
+Tampilkan:
+| Minggu | TP | Materi | Praktik | Asesmen |
+
+ATP:
+[PASTE ATP]`],
+
+["12","Validasi ATP",`Lakukan pemeriksaan akhir terhadap ATP berikut.
+
+Periksa:
+1. Kesesuaian dengan CP.
+2. Kesesuaian TP.
+3. Urutan kompetensi.
+4. Keseimbangan teori dan praktik.
+5. Kelayakan waktu.
+6. Keterkaitan dengan dunia kerja.
+7. Kesesuaian dengan tingkat kelas.
+
+Berikan status:
+LAYAK / PERLU PERBAIKAN
+
+Jika perlu perbaikan, tampilkan versi revisinya.
+
+CP:
+[PASTE CP]
+
+TP:
+[PASTE TP]
+
+ATP:
+[PASTE ATP]`],
+
+["13","Kelas X",`Sesuaikan rancangan pembelajaran berikut untuk peserta didik SMK kelas X/Fase E bidang TKJ/TJKT.
+
+Pastikan tingkat kesulitan sesuai peserta didik yang baru memasuki kompetensi keahlian.
+
+Berikan:
+- kompetensi awal
+- materi dasar
+- praktik dasar
+- alat yang diperlukan
+- risiko kesalahan umum
+- bentuk asesmen
+
+Materi/TP:
+[PASTE]`],
+
+["14","Kelas XI",`Sesuaikan pembelajaran berikut untuk peserta didik SMK kelas XI TKJ/TJKT.
+
+Fokuskan pada:
+- penerapan
+- konfigurasi
+- praktik
+- troubleshooting
+- proyek
+- standar kerja industri
+
+Materi/TP:
+[PASTE]`],
+
+["15","Kelas XII",`Sesuaikan pembelajaran berikut untuk peserta didik SMK kelas XII TKJ/TJKT.
+
+Fokuskan pada:
+- kompetensi lanjutan
+- pemecahan masalah
+- proyek
+- pekerjaan berbasis industri
+- dokumentasi
+- kesiapan kerja
+
+Materi/TP:
+[PASTE]`],
+
+["16","Dunia Kerja",`Hubungkan TP berikut dengan aktivitas kerja yang relevan pada bidang jaringan komputer.
+
+Tampilkan:
+| TP | Kompetensi | Contoh Pekerjaan | Aktivitas Industri | Bukti Kompetensi |
+
+Jangan mengklaim sertifikasi atau standar industri tertentu jika tidak diberikan sumber.
+
+TP:
+[PASTE TP]`],
+
+["17","Review CP → TP → ATP",`Lakukan audit terhadap hubungan:
+
+CP → TP → ATP
+
+Cari apakah terdapat:
+- kompetensi CP yang belum memiliki TP
+- TP yang tidak memiliki dasar CP
+- TP yang belum masuk ATP
+- urutan yang tidak logis
+- materi yang tidak relevan
+
+Tampilkan hasil dalam tabel:
+| Temuan | Lokasi | Masalah | Rekomendasi |`],
+
+["18","Perbaikan Terintegrasi",`Berdasarkan hasil audit, lakukan perbaikan CP → TP → ATP.
+
+Pertahankan isi CP sebagai dasar.
+
+Jangan mengubah substansi CP.
+
+Hasil akhir harus berisi:
+1. CP
+2. TP
+3. ATP
+4. Pemetaan CP → TP → ATP
+5. Catatan perubahan`],
+
+["19","Format Tabel",`Ubah hasil CP → TP → ATP berikut menjadi tabel yang rapi dan mudah dipindahkan ke Microsoft Word atau Excel.
+
+Jangan mengubah isi.
+
+Gunakan kolom:
+| No | CP | TP | Materi | Aktivitas | Praktik | Asesmen | Semester |`],
+
+["20","ONE CLICK PACKAGE",`Bertindaklah sebagai ahli kurikulum SMK dan instructional designer bidang TKJ/TJKT.
+
+Saya akan memberikan CP.
+
+Kerjakan secara berurutan:
+
+TAHAP 1
+Analisis CP.
+
+TAHAP 2
+Identifikasi kompetensi, materi, dan keterampilan.
+
+TAHAP 3
+Susun Tujuan Pembelajaran.
+
+TAHAP 4
+Validasi TP terhadap CP.
+
+TAHAP 5
+Susun ATP berdasarkan TP.
+
+TAHAP 6
+Urutkan ATP dari kompetensi dasar menuju kompetensi yang lebih kompleks.
+
+TAHAP 7
+Sesuaikan dengan kelas dan semester yang saya tentukan.
+
+TAHAP 8
+Hubungkan pembelajaran dengan praktik dan kebutuhan dunia kerja.
+
+TAHAP 9
+Lakukan audit CP → TP → ATP.
+
+TAHAP 10
+Perbaiki jika ditemukan ketidaksesuaian.
+
+Jangan mengarang isi regulasi. Jika informasi regulasi diperlukan tetapi tidak tersedia dalam input, tandai bagian tersebut sebagai "perlu diverifikasi dengan regulasi/dokumen resmi terbaru".
+
+Data:
+
+Kelas:
+[ISI]
+
+Fase:
+[ISI]
+
+Semester:
+[ISI]
+
+Jurusan/Konsentrasi:
+[ISI]
+
+Mata Pelajaran:
+[ISI]
+
+Jumlah minggu efektif:
+[ISI]
+
+CP:
+[PASTE CP]
+
+Berikan hasil akhir dalam format tabel yang mudah dipindahkan ke Word/Excel.`]
+];
+
+function formData(){
+  return {
+    kelas: document.getElementById("kelas").value.trim(),
+    fase: document.getElementById("fase").value.trim(),
+    semester: document.getElementById("semester").value,
+    jurusan: document.getElementById("jurusan").value.trim(),
+    mapel: document.getElementById("mapel").value.trim(),
+    elemen: document.getElementById("elemen").value.trim(),
+    minggu: document.getElementById("minggu").value.trim(),
+    cp: document.getElementById("cp").value.trim()
+  };
+}
+function personalize(text){
+  const d=formData();
+  return text
+    .replaceAll("[ X / XI / XII ]", d.kelas || "[ X / XI / XII ]")
+    .replaceAll("[ X / XI / XII ]", d.kelas || "[ X / XI / XII ]")
+    .replaceAll("[ISI]", d.minggu || "[ISI]")
+    .replaceAll("[PASTE CP DI SINI]", d.cp || "[PASTE CP DI SINI]")
+    .replaceAll("[PASTE CP]", d.cp || "[PASTE CP]")
+    .replaceAll("[ X / XI / XII ]", d.kelas || "[ X / XI / XII ]");
+}
+function render(){
+  const list=document.getElementById("promptList");
+  list.innerHTML=prompts.map((p,i)=>`
+    <div class="prompt-card" data-search="${(p[0]+' '+p[1]+' '+p[2]).toLowerCase()}">
+      <div class="prompt-head">
+        <div><span class="badge">PROMPT ${p[0]}</span><h3>${p[1]}</h3></div>
+        <button class="btn-primary" onclick="copyPrompt(${i})">Copy</button>
+      </div>
+      <details>
+        <summary>Lihat prompt</summary>
+        <pre>${escapeHtml(p[2])}</pre>
+      </details>
+    </div>`).join("");
+}
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+function copyPrompt(i){
+  navigator.clipboard.writeText(personalize(prompts[i][2])).then(()=>alert("Prompt "+prompts[i][0]+" berhasil disalin."));
+}
+function copyOneClick(){copyPrompt(19)}
+function copyAll(){
+  const text=prompts.map(p=>"PROMPT "+p[0]+" — "+p[1]+"\n\n"+personalize(p[2])).join("\n\n"+"=".repeat(70)+"\n\n");
+  navigator.clipboard.writeText(text).then(()=>alert("Semua 20 prompt berhasil disalin."));
+}
+function filterPrompts(){
+  const q=document.getElementById("search").value.toLowerCase();
+  document.querySelectorAll(".prompt-card").forEach(el=>el.classList.toggle("hidden",!el.dataset.search.includes(q)));
+}
+function resetForm(){
+  ["kelas","fase","mapel","elemen","minggu","cp"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("jurusan").value="TKJ / TJKT";
+  document.getElementById("semester").value="";
+}
+render();
+</script>
+</body>
+</html>
